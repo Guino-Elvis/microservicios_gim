@@ -35,7 +35,7 @@ const CategoriaProds = () => {
     setIsModalOpen(false);
   };
   // end modal
-  const API_URL = "http://localhost:9090";
+  const API_URL = "http://localhost:8080";
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [categoriaProds, setCategoriaProds] = useState([]);
   //fracmento de paginacion

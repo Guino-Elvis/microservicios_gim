@@ -5,17 +5,17 @@ import login from '../../styles/login.css';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [userName, setuserName] = useState("");
   const [password, setPassword] = useState("");
   const [registerMode, setRegisterMode] = useState(false);
-  const [confirmPassword, setConfirmPassword] = useState("");
+ 
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:9090/auth/login", {
-        email: email,
+      const response = await axios.post("http://localhost:8080/auth/login", {
+        userName: userName,
         password: password,
       });
 
@@ -39,10 +39,10 @@ const Login = () => {
     e.preventDefault();
   
     try {
-      const response = await axios.post("http://localhost:9090/auth/create", {
-        email: email,
+      const response = await axios.post("http://localhost:8080/auth/create", {
+        userName: userName,
         password: password,
-        confirmPassword: confirmPassword,
+      
       });
   
       // Procesar la respuesta del backend, por ejemplo, mostrar un mensaje de éxito
@@ -162,11 +162,11 @@ const Login = () => {
             <form onSubmit={handleLogin} className="formulario__login">
               <h2>Iniciar Sesión</h2>
               <input
-                type="email"
-                id="email"
-                name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                id="userName"
+                name="userName"
+                value={userName}
+                onChange={(e) => setuserName(e.target.value)}
                 required
                 autoFocus
                 placeholder="Correo Electrónico"
@@ -200,11 +200,11 @@ const Login = () => {
             <form onSubmit={handleRegister} className="formulario__register">
               <h2>Registrarse</h2>
               <input
-                type="email"
-                id="email"
-                name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                id="userName"
+                name="userName"
+                value={userName}
+                onChange={(e) => setuserName(e.target.value)}
                 required
                 placeholder="Correo Electrónico"
               />
@@ -218,16 +218,7 @@ const Login = () => {
                 autoComplete="new-password"
                 placeholder="Contraseña"
               />
-              <input
-                type="password"
-                id="password_confirmation"
-                name="password_confirmation"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                autoComplete="new-password"
-                placeholder="Confirmar Contraseña"
-              />
+             
            
               <button type="submit">Registrarse</button>
             </form>

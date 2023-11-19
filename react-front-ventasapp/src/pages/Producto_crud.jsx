@@ -38,7 +38,7 @@ const Cproductos = () => {
     };
     // end modal
 
-    const API_URL = "http://localhost:9090";
+    const API_URL = "http://localhost:8080";
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [cproductos, setCproductos] = useState([]);
     //fracmento de paginacion
