@@ -50,12 +50,9 @@ const Cproductos = () => {
     const [cproductoEditado, setCproductoEditado] = useState({
         id: null,
         nombre: "",
-        costo: "",
-        descripcion: "",
-        stock: "",
         precio: "",
-        estado: "",
-        categoriaId: "",
+        detalle: "",
+        categoria: { id: null },
     });
 
     const getCproductos = () => {
@@ -66,38 +63,15 @@ const Cproductos = () => {
           },
         })
             .then((response) => {
-                const sortedCproductos = response.data.sort();
+                const sortedCproductos = response.data;
                 setCproductos(sortedCproductos.reverse());
 
                 const filtered = response.data.filter((cproducto) => {
                     const nombreCompleto = `${cproducto.nombre}`;
                     return nombreCompleto.toLowerCase().includes(searchTerm.toLowerCase());
                 });
-
-                // Obtener los nombres de los categorias para cada cproducto
-                const categoriaPromises = filtered.map((cproducto) => {
-                    return axios.get(`${API_URL}/categoria/${cproducto.categoriaId}`,{
-                        headers: {
-                          Authorization: `Bearer ${token}`,
-                        },
-                      });
-                });
-
-                // Realizar las solicitudes en paralelo
-                axios.all(categoriaPromises)
-                    .then((responses) => {
-                        // Mapear los nombres de los categorias a los cproductos correspondientes
-                        const cproductosConCategorias = filtered.map((cproducto, index) => {
-                            const nombreCategoria = responses[index].data.nombre;
-                            const tituloCategoria = responses[index].data.titulo;
-                            return { ...cproducto, nombreCategoria, tituloCategoria };
-                        });
-
-                        setFilteredCproductos(cproductosConCategorias);
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
+                setFilteredCproductos(filtered);
+                   
             })
             .catch((error) => {
                 console.log(error);
@@ -109,12 +83,9 @@ const Cproductos = () => {
         setCproductoEditado({
             id: cproducto.id,
             nombre: cproducto.nombre,
-            costo: cproducto.costo,
-            descripcion: cproducto.descripcion,
-            stock: cproducto.stock,
             precio: cproducto.precio,
-            estado: cproducto.estado,
-            categoriaId: cproducto.categoriaId,
+            detalle: cproducto.detalle,
+            categoria: cproducto.categoria,
 
         });
         openModal()
@@ -124,14 +95,13 @@ const Cproductos = () => {
         event.preventDefault();
         if (
             !cproductoEditado.nombre.trim() ||
-            !cproductoEditado.costo.trim() ||
-            !cproductoEditado.descripcion.trim() ||
-            !cproductoEditado.stock.trim() ||
             !cproductoEditado.precio.trim() ||
-            !cproductoEditado.estado.trim() ||
-            !cproductoEditado.categoriaId.trim()
-
+            !cproductoEditado.detalle.trim() ||
+            !cproductoEditado.categoria ||
+            !cproductoEditado.categoria.id
         ) {
+            console.log('Error de validación en los datos de la cproductoEditado.');
+            console.log('cproductoEditado.:', cproductoEditado);
             return;
         }
 
@@ -140,42 +110,34 @@ const Cproductos = () => {
             // Crear el nuevo cproducto con la URL de la foto
             const nuevoCproducto = {
                 nombre: cproductoEditado.nombre,
-                costo: cproductoEditado.costo,
-                descripcion: cproductoEditado.descripcion,
-                stock: cproductoEditado.stock,
                 precio: cproductoEditado.precio,
-                estado: cproductoEditado.estado,
-                categoriaId: cproductoEditado.categoriaId,
+                detalle: cproductoEditado.detalle,
+                categoria: cproductoEditado.categoria,
             };
+            console.log('nuevoCproducto:', nuevoCproducto);
 
             // Realizar la solicitud POST para crear el cproducto utilizando axios
-            axios
+            const response = await axios
                 .post(`${API_URL}/producto`, nuevoCproducto,{
                     headers: {
                       Authorization: `Bearer ${token}`,
                     },
-                  })
-                .then((response) => {
+                  });
+                  console.log('Respuesta de creación de produto:', response.data);
+                
                     setCproductoEditado({
                         id: null,
                         nombre: "",
-                        costo: "",
-                        descripcion: "",
-                        stock: "",
                         precio: "",
-                        estado: "",
-                        categoriaId: "",
+                        detalle: "",
+                        categoria: { id: null },
                     });
                     getCproductos();
                     closeModal()
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        } catch (error) {
-            console.log(error);
-        }
-    };
+                } catch (error) {
+                    console.log('Error al crear la asistencia:', error);
+                  }
+                };
 
 
     const actualizarCproducto = async (event) => {
@@ -187,12 +149,9 @@ const Cproductos = () => {
             const cproductoActualizado = {
                 id: cproductoEditado.id,
                 nombre: cproductoEditado.nombre,
-                costo: cproductoEditado.costo,
-                descripcion: cproductoEditado.descripcion,
-                stock: cproductoEditado.stock,
                 precio: cproductoEditado.precio,
-                estado: cproductoEditado.estado,
-                categoriaId: cproductoEditado.categoriaId,
+                detalle: cproductoEditado.detalle,
+                categoria: cproductoEditado.categoria,
             };
 
             // Realizar la solicitud PUT para actualizar el cproducto
@@ -211,12 +170,9 @@ const Cproductos = () => {
             setCproductoEditado({
                 id: null,
                 nombre: "",
-                costo: "",
-                descripcion: "",
-                stock: "",
                 precio: "",
-                estado: "",
-                categoriaId: "",
+                detalle: "",
+                categoria:{ id: null },
             });
         } catch (error) {
             console.log(error);
@@ -275,49 +231,17 @@ const Cproductos = () => {
                         </div>
 
                         <div className="w-full">
-                            <label className="block">Costo</label>
+                            <label className="block">detalle</label>
                             <input
-                                value={cproductoEditado.costo}
+                                value={cproductoEditado.detalle}
                                 onChange={(event) =>
                                     setCproductoEditado({
                                         ...cproductoEditado,
-                                        costo: event.target.value,
-                                    })
-                                }
-                                type="number"
-                                placeholder="costo"
-                                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-                            />
-                        </div>
-
-                        <div className="w-full">
-                            <label className="block">descripcion</label>
-                            <input
-                                value={cproductoEditado.descripcion}
-                                onChange={(event) =>
-                                    setCproductoEditado({
-                                        ...cproductoEditado,
-                                        descripcion: event.target.value,
+                                        detalle: event.target.value,
                                     })
                                 }
                                 type="text"
-                                placeholder="descripcion"
-                                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-                            />
-                        </div>
-
-                        <div className="w-full">
-                            <label className="block">stock</label>
-                            <input
-                                value={cproductoEditado.stock}
-                                onChange={(event) =>
-                                    setCproductoEditado({
-                                        ...cproductoEditado,
-                                        stock: event.target.value,
-                                    })
-                                }
-                                type="number"
-                                placeholder="stock"
+                                placeholder="detalle"
                                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                             />
                         </div>
@@ -338,34 +262,15 @@ const Cproductos = () => {
                             />
                         </div>
 
-                        <div className="w-full">
-                            <label className="block">estado</label>
-                            <input
-                                value={cproductoEditado.estado}
-                                onChange={(event) =>
-                                    setCproductoEditado({
-                                        ...cproductoEditado,
-                                        estado: event.target.value,
-                                    })
-                                }
-                                type="text"
-                                placeholder="estado"
-                                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-                            />
-                        </div>
-
-
                         <div className="ml-1">
                             <label className="block">categoria</label>
-                            <SelectCategoria onChange={(categoriaId) =>
+                            <SelectCategoria onChange={(categoriaSeleccionada) =>
                                 setCproductoEditado({
                                     ...cproductoEditado,
-                                    categoriaId: categoriaId,
+                                    categoria: categoriaSeleccionada,
                                 })
                             }
-                                selectedCategoriaId={cproductoEditado.categoriaId}
-                                cproductoEditado={cproductoEditado}
-                                setCproductoEditado={setCproductoEditado}
+                                selectedCategoriaId={cproductoEditado.categoria.id}
                             />
                         </div></div>
 
@@ -489,14 +394,14 @@ const Cproductos = () => {
                                                         <div class="flex px-2 py-1">
 
                                                             <div class="flex flex-col justify-center">
-                                                                <h6 class="mb-0 text-sm leading-normal dark:text-white">{cproducto.nombreCategoria} ,{cproducto.tituloCategoria} </h6>
+                                                              <h6 class="mb-0 text-sm leading-normal dark:text-white">{cproducto.categoria.nombre} </h6>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td class="pl-4 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                                                         <div class="flex px-2 py-1">
                                                             <div class="flex flex-col justify-center">
-                                                                <h6 class="mb-0 text-sm leading-normal dark:text-white">S/. {cproducto.costo} </h6>
+                                                                <h6 class="mb-0 text-sm leading-normal dark:text-white">S/. {cproducto.precio} </h6>
                                                             </div>
                                                         </div>
                                                     </td>

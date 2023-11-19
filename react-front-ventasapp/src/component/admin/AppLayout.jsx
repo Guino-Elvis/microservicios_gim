@@ -12,7 +12,6 @@ const AppLayout = ({ children }) => {
   
       <div class="ease-soft-in-out xl:ml-60  h-full max-h-screen rounded-xl transition-all duration-200">
 
-       
        {/* CAR */}
        <div class="w-full px-6 py-6 mx-auto  ">
           {children}

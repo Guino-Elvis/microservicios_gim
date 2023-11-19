@@ -46,11 +46,9 @@ const CategoriaProds = () => {
   // end fracmento de paginacion
   const [categoriaProdEditado, setCategoriaProdEditado] = useState({
     id: null,
-    titulo: "",
     nombre: "",
-    descripccion: "",
-    modelo: "",
-    marca: "",
+    descripcion: "",
+ 
 
   });
 
@@ -65,8 +63,8 @@ const CategoriaProds = () => {
         const sortedCategoriaProds = response.data.sort();
         setCategoriaProds(sortedCategoriaProds.reverse());
         const filtered = response.data.filter((categoriaProd) => {
-          const tituloCompleto = `${categoriaProd.titulo} ${categoriaProd.nombre}${categoriaProd.modelo}${categoriaProd.marca}`;
-          return tituloCompleto.toLowerCase().includes(searchTerm.toLowerCase());
+          const nombreCompleto = `${categoriaProd.nombre}$`;
+          return nombreCompleto.toLowerCase().includes(searchTerm.toLowerCase());
         });
 
         setFilteredCategoriaProds(filtered);
@@ -82,11 +80,9 @@ const CategoriaProds = () => {
     const categoriaProd = categoriaProds.find((p) => p.id === id);
     setCategoriaProdEditado({
       id: categoriaProd.id,
-      titulo: categoriaProd.titulo,
       nombre: categoriaProd.nombre,
-      descripccion: categoriaProd.descripccion,
-      modelo: categoriaProd.modelo,
-      marca: categoriaProd.marca,
+      descripcion: categoriaProd.descripcion,
+   
     });
     openModal()
   }
@@ -94,11 +90,8 @@ const CategoriaProds = () => {
   const crearCategoriaProd = async (event) => {
     event.preventDefault();
     if (
-      !categoriaProdEditado.titulo.trim() ||
       !categoriaProdEditado.nombre.trim() ||
-      !categoriaProdEditado.descripccion.trim() ||
-      !categoriaProdEditado.modelo.trim() ||
-      !categoriaProdEditado.marca.trim()
+      !categoriaProdEditado.descripcion.trim()
     ) {
       return;
     }
@@ -106,11 +99,8 @@ const CategoriaProds = () => {
     try {
 
       const nuevoCategoriaProd = {
-        titulo: categoriaProdEditado.titulo,
         nombre: categoriaProdEditado.nombre,
-        descripccion: categoriaProdEditado.descripccion,
-        modelo: categoriaProdEditado.modelo,
-        marca: categoriaProdEditado.marca,
+        descripcion: categoriaProdEditado.descripcion,
       };
 
 
@@ -123,12 +113,8 @@ const CategoriaProds = () => {
         .then((response) => {
           setCategoriaProdEditado({
             id: null,
-            titulo: "",
             nombre: "",
-            descripccion: "",
-            modelo: "",
-            marca: "",
-
+            descripcion: "",
           });
           getCategoriaProds();
           closeModal()
@@ -150,11 +136,8 @@ const CategoriaProds = () => {
 
       const categoriaProdActualizado = {
         id: categoriaProdEditado.id,
-        titulo: categoriaProdEditado.titulo,
         nombre: categoriaProdEditado.nombre,
-        descripccion: categoriaProdEditado.descripccion,
-        modelo: categoriaProdEditado.modelo,
-        marca: categoriaProdEditado.marca,
+        descripcion: categoriaProdEditado.descripcion,
       };
 
       // Realizar la solicitud PUT para actualizar el categoriaProd
@@ -172,11 +155,8 @@ const CategoriaProds = () => {
       closeModal()
       setCategoriaProdEditado({
         id: null,
-        titulo: "",
         nombre: "",
-        descripccion: "",
-        modelo: "",
-        marca: "",
+        descripcion: "",
 
       });
     } catch (error) {
@@ -219,21 +199,7 @@ const CategoriaProds = () => {
       <form onSubmit={categoriaProdEditado.id ? actualizarCategoriaProd : crearCategoriaProd}>
         <div className="mt-4">
           <div className="flex flex-wrap">
-            <div className="w-full">
-              <label className="block">Titulo</label>
-              <input
-                value={categoriaProdEditado.titulo}
-                onChange={(event) =>
-                  setCategoriaProdEditado({
-                    ...categoriaProdEditado,
-                    titulo: event.target.value,
-                  })
-                }
-                type="text"
-                placeholder="Titulo"
-                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-              />
-            </div>
+           
 
             <div className="ml-1 w-full">
               <label className="block">Nombre</label>
@@ -250,51 +216,23 @@ const CategoriaProds = () => {
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
               />
             </div>
+
             <div className="ml-1 w-full">
               <label className="block">Descripcion</label>
               <input
-                value={categoriaProdEditado.descripccion}
+                value={categoriaProdEditado.descripcion}
                 onChange={(event) =>
                   setCategoriaProdEditado({
                     ...categoriaProdEditado,
-                    descripccion: event.target.value,
+                    descripcion: event.target.value,
                   })
                 }
                 type="text"
-                placeholder="descripccion"
+                placeholder="descripcion"
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
               />
             </div>
-            <div className="ml-1 w-full">
-              <label className="block">Modelo</label>
-              <input
-                value={categoriaProdEditado.modelo}
-                onChange={(event) =>
-                  setCategoriaProdEditado({
-                    ...categoriaProdEditado,
-                    modelo: event.target.value,
-                  })
-                }
-                type="text"
-                placeholder="modelo"
-                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-              />
-            </div>
-            <div className="ml-1 w-full">
-              <label className="block">Marca</label>
-              <input
-                value={categoriaProdEditado.marca}
-                onChange={(event) =>
-                  setCategoriaProdEditado({
-                    ...categoriaProdEditado,
-                    marca: event.target.value,
-                  })
-                }
-                type="text"
-                placeholder="marca"
-                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-              />
-            </div>
+         
 
             </div>
           <div className="mt-4">
@@ -386,8 +324,8 @@ const CategoriaProds = () => {
                     <thead class="align-bottom">
                       <tr>
                         <th class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400  ">ID</th>
-                        <th class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400  ">Titulo</th>
-                        <th class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400  ">Descripccion</th>
+                        <th class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400  ">Nombre</th>
+                        <th class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400  ">Descripcion</th>
                         <th class="px-6 py-3 pl-2 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400  ">Creado</th>
                         <th class="px-6 py-3  font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400  ">Actualizado</th>
                         <th class="px-6 py-3  font-semibold capitalize align-middle bg-transparent border-b border-collapse border-solid shadow-none dark:border-white/40 dark:text-white tracking-none whitespace-nowrap text-slate-400  "></th>
@@ -407,10 +345,10 @@ const CategoriaProds = () => {
                           </td>
                       
                           <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
-                            <p class="mb-0 text-xs leading-tight dark:text-white dark:opacity-80 text-slate-400">{categoriaProd.titulo}</p>
+                            <p class="mb-0 text-xs leading-tight dark:text-white dark:opacity-80 text-slate-400">{categoriaProd.nombre}</p>
                           </td>
                           <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
-                            <p class="mb-0 text-xs leading-tight dark:text-white dark:opacity-80 text-slate-400">{categoriaProd.descripccion}</p>
+                            <p class="mb-0 text-xs leading-tight dark:text-white dark:opacity-80 text-slate-400">{categoriaProd.descripcion}</p>
                           </td>
                           <td class="p-2 text-center align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                             <span class="text-xs font-semibold leading-tight dark:text-white dark:opacity-80 text-slate-400">{categoriaProd.created_at}</span>

@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { API_URL } from '../config';
 function SelectCategoria({ onChange }) {
-     // token
-     const token = localStorage.getItem("token");
-     // end token
+
   const [categorias, setCategorias] = useState([]);
   const [selectedCategoriaId, setSelectedCategoriaId] = useState('');
-
+  // token
+  const token = localStorage.getItem("token");
+  // end token
   useEffect(() => {
     obtenerCategorias();
   }, []);
@@ -30,7 +30,8 @@ function SelectCategoria({ onChange }) {
   const handleSeleccionarCategoria = (event) => {
     const categoriaId = event.target.value;
     setSelectedCategoriaId(categoriaId);
-    onChange(categoriaId);
+    onChange({ id: categoriaId });
+    //onChange(categoriaId);
   };
 
   return (
